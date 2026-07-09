@@ -1,1 +1,1 @@
-Small SPA toying without layout and Svelte and its animations
+Small SPA toying with layout and Svelte and its animations
