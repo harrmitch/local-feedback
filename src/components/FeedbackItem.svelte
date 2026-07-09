@@ -1,17 +1,14 @@
 <script>
-  import { createEventDispatcher } from "svelte";
   import Card from "./Card.svelte";
-  export let feedback;
+  const { feedback, onDelete } = $props();
 
-  const dispatch = createEventDispatcher();
-
-  const handleDelete = (id) => dispatch("delete", id);
+  const handleDelete = (id) => onDelete(id);
 </script>
 
 <Card>
   <div class="heading">
     <div class="rating">{feedback.rating}</div>
-    <i class="material-icons" on:click={() => handleDelete(feedback.id)}
+    <i class="material-icons" onclick={() => handleDelete(feedback.id)}
       >delete</i
     >
   </div>

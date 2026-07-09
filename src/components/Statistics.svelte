@@ -1,12 +1,13 @@
 <script>
-  export let feedbacks = [];
+  const { feedbacks = [] } = $props();
 
-  $: count = feedbacks.length;
-  $: average =
-    feedbacks.reduce(
+  let count = $derived(feedbacks.length);
+  let average =
+    $derived(feedbacks.reduce(
       (previousValue, current) => previousValue + current.rating,
       0
-    ) / count;
+    ) / count);
+
 </script>
 
 <div class="container">

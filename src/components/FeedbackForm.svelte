@@ -1,29 +1,19 @@
 <script>
   import uniqid from "uniqid";
   import Card from "./Card.svelte";
-  export let feedbacks;
+  let { feedbacks = $bindable() } = $props();
 
-  let text = "";
-  let message;
-  let invalid = true;
-  let selected = 10;
-  const values = [...Array(11).keys()].splice(1);
-  const min = 50;
+  const VALUES = [...Array(11).keys()].splice(1);
+  const MIN_CHAR_COUNT = 50;
 
-  const checkValid = (text) => {
-    if (text.replace(/\s/g, " ").length < min) {
-      invalid = true;
-    } else {
-      invalid = false;
-    }
-  };
-
-  $: checkValid(text);
+  let text = $state("");
+  let message = $state();
+  let invalid = $derived(text.replace(/\s/g, " ").length < MIN_CHAR_COUNT);
+  let selected = $state(10);
 
   const submitHandler = () => {
-    checkValid(text);
     if (invalid) {
-      message = `Please submit at least ${min} characters.`;
+      message = `Please submit at least ${MIN_CHAR_COUNT} characters.`;
     } else {
       let newFeedback = { id: uniqid(), rating: selected, review: text };
       feedbacks = [newFeedback, ...feedbacks];
@@ -31,7 +21,6 @@
       text = "";
       selected = 10;
       message = null;
-      invalid = true;
     }
   };
 </script>
@@ -41,7 +30,7 @@
     <header><h1>How do you feel about our service?</h1></header>
 
     <div class="rating-form">
-      {#each values as value}
+      {#each VALUES as value}
         <input
           type="radio"
           bind:group={selected}
@@ -55,13 +44,16 @@
       {/each}
     </div>
 
-    <form on:submit|preventDefault={submitHandler}>
+    <form onsubmit={(e) => {
+      e.preventDefault();
+      submitHandler();
+    }}>
       <input
         type="text"
         bind:value={text}
-        placeholder={`Write at least ${min} characters to submit.`}
+        placeholder={`Write at least ${MIN_CHAR_COUNT} characters to submit.`}
       />
-      <button class={invalid && "disabled"}>Send</button>
+      <button class={invalid ? "disabled" : ""}>Send</button>
     </form>
 
     {#if message}
